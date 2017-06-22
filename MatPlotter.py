@@ -2,8 +2,11 @@ import ROOT
 import math
 
 
-fIn=ROOT.TFile('MinBias3D_MC.root')
-fOut=ROOT.TFile('RadLength.root', 'RECREATE')
+prefix = 'June22_'
+source = 'DATA'
+
+fIn=ROOT.TFile(prefix+'MinBias3D_'+source+'.root')
+fOut=ROOT.TFile(prefix+'RadLength_'+source+'.root', 'RECREATE')
 
 ROOT.gStyle.SetOptStat(0)
 ROOT.gROOT.SetBatch(ROOT.kTRUE)

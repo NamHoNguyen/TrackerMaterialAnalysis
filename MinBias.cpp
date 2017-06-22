@@ -22,6 +22,7 @@ int layer[35]={-99};
 int detector[35]={0};
 float sag=-99;
 int n_pixel=0;
+string prefix="June22_";
 
 void MinBiasAnalysis(TTree *Tree, bool isFirstRun, bool isMC){
 
@@ -45,8 +46,8 @@ void MinBiasAnalysis(TTree *Tree, bool isFirstRun, bool isMC){
 
 	TFile *fileIN;
 	if(!isFirstRun){
-		if(isMC) fileIN = TFile::Open("MinBiasMC_sag1D.root");
-		else fileIN = TFile::Open("MinBiasDATA_sag1D.root");
+		if(isMC) fileIN = TFile::Open(prefix+"MinBiasMC_sag1D.root");
+		else fileIN = TFile::Open(prefix+"MinBiasDATA_sag1D.root");
 	}
 
 	// Loop over tracks
@@ -290,13 +291,13 @@ void MinBias(bool isFirstRun = true, bool isMC = true, TString dirname="root://e
 	// Writes 1D histos
 	if(isFirstRun){
 		TFile *fileOUT;
-		if(isMC) fileOUT = new TFile("MinBiasMC_sag1D.root","RECREATE");
-		else fileOUT = new TFile("MinBiasDATA_sag1D.root","RECREATE");
+		if(isMC) fileOUT = new TFile(prefix+"MinBiasMC_sag1D.root","RECREATE");
+		else fileOUT = new TFile(prefix+"MinBiasDATA_sag1D.root","RECREATE");
 	}
 	else{
 	TFile *fileOUT;
-	if(isMC) fileOUT = new TFile("MinBiasMC_sag1D_new.root","RECREATE");
-	else fileOUT = new TFile("MinBiasDATA_sag1D_new.root","RECREATE");
+	if(isMC) fileOUT = new TFile(prefix+"MinBiasMC_sag1D_new.root","RECREATE");
+	else fileOUT = new TFile(prefix+"MinBiasDATA_sag1D_new.root","RECREATE");
 }
 
 for(it1dm=h_1dm.begin(); it1dm!=h_1dm.end(); it1dm++) {
@@ -316,8 +317,8 @@ for(it1dpl=h_1dpl.begin(); it1dpl!=h_1dpl.end(); it1dpl++) {
 
 if(!isFirstRun){
 	TFile *file3D;
-	if(isMC) file3D= new TFile("MinBias3D_MC.root","RECREATE");
-	else file3D=new TFile("MinBias3D_DATA.root","RECREATE");
+	if(isMC) file3D= new TFile(prefix+"MinBias3D_MC.root","RECREATE");
+	else file3D=new TFile(prefix+"MinBias3D_DATA.root","RECREATE");
 }
 for(it3d=h_3dm.begin(); it3d!=h_3dm.end(); it3d++) {
 
