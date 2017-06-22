@@ -46,8 +46,8 @@ void MinBiasAnalysis(TTree *Tree, bool isFirstRun, bool isMC){
 
 	TFile *fileIN;
 	if(!isFirstRun){
-		if(isMC) fileIN = TFile::Open(prefix+"MinBiasMC_sag1D.root");
-		else fileIN = TFile::Open(prefix+"MinBiasDATA_sag1D.root");
+		if(isMC) fileIN = TFile::Open((prefix+"MinBiasMC_sag1D.root").c_str());
+		else fileIN = TFile::Open((prefix+"MinBiasDATA_sag1D.root").c_str());
 	}
 
 	// Loop over tracks
@@ -143,7 +143,8 @@ void MinBiasAnalysis(TTree *Tree, bool isFirstRun, bool isMC){
 				}
 
 				if(position[j]=="_TID+1"||position[j]=="_TID-1"){
-					if(position[k]=="_TIB1"||position[k]=="_TIB2"||position[k]=="_TIB3") i_prev=k;
+					if(position[k]=="_TIB1"||position[k]=="_TIB2"||position[k]=="_TIB3"||position[k]=="_TIB4") i_prev=k;
+					//if(position[k]=="_TIB1"||position[k]=="_TIB2"||position[k]=="_TIB3") i_prev=k;
 				}
 				if(position[j]=="_TEC+1"||position[j]=="_TEC-1"){
 					if(position[k]=="_TOB1"||position[k]=="_TOB2"||position[k]=="_TOB3"||position[k]=="_TOB4"||position[k]=="_TOB5") i_prev=k;
@@ -291,13 +292,13 @@ void MinBias(bool isFirstRun = true, bool isMC = true, TString dirname="root://e
 	// Writes 1D histos
 	if(isFirstRun){
 		TFile *fileOUT;
-		if(isMC) fileOUT = new TFile(prefix+"MinBiasMC_sag1D.root","RECREATE");
-		else fileOUT = new TFile(prefix+"MinBiasDATA_sag1D.root","RECREATE");
+		if(isMC) fileOUT = new TFile((prefix+"MinBiasMC_sag1D.root").c_str(),"RECREATE");
+		else fileOUT = new TFile((prefix+"MinBiasDATA_sag1D.root").c_str(),"RECREATE");
 	}
 	else{
 	TFile *fileOUT;
-	if(isMC) fileOUT = new TFile(prefix+"MinBiasMC_sag1D_new.root","RECREATE");
-	else fileOUT = new TFile(prefix+"MinBiasDATA_sag1D_new.root","RECREATE");
+	if(isMC) fileOUT = new TFile((prefix+"MinBiasMC_sag1D_new.root").c_str(),"RECREATE");
+	else fileOUT = new TFile((prefix+"MinBiasDATA_sag1D_new.root").c_str(),"RECREATE");
 }
 
 for(it1dm=h_1dm.begin(); it1dm!=h_1dm.end(); it1dm++) {
@@ -317,8 +318,8 @@ for(it1dpl=h_1dpl.begin(); it1dpl!=h_1dpl.end(); it1dpl++) {
 
 if(!isFirstRun){
 	TFile *file3D;
-	if(isMC) file3D= new TFile(prefix+"MinBias3D_MC.root","RECREATE");
-	else file3D=new TFile(prefix+"MinBias3D_DATA.root","RECREATE");
+	if(isMC) file3D= new TFile((prefix+"MinBias3D_MC.root").c_str(),"RECREATE");
+	else file3D=new TFile((prefix+"MinBias3D_DATA.root").c_str(),"RECREATE");
 }
 for(it3d=h_3dm.begin(); it3d!=h_3dm.end(); it3d++) {
 

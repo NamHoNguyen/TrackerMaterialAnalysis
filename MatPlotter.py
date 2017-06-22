@@ -3,7 +3,7 @@ import math
 
 
 prefix = 'June22_'
-source = 'DATA'
+source = 'MC'
 
 fIn=ROOT.TFile(prefix+'MinBias3D_'+source+'.root')
 fOut=ROOT.TFile(prefix+'RadLength_'+source+'.root', 'RECREATE')
