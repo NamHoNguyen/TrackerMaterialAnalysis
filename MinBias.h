@@ -36,7 +36,10 @@
 #include "TSystem.h"
 #include "Math/IFunction.h"
 #include <cmath>
+#include "TStopwatch.h"
+#include "THnSparse.h"
 
+int countIndex;
 // Global definitions
 std::map<std::string, TH1F*> h_1d;
 std::map<std::string, TH1F*> h_1dm;
@@ -52,10 +55,14 @@ std::map<std::string, TH2F*> h_2dxptpl;
 std::map<std::string, TH2F*> h_2dxptm;
 std::map<std::string, TH2F*> h_2dp;
 std::map<std::string, TH2F*> h_2dp2;
-std::map<std::string, TH3F*> h_3dpl;
-std::map<std::string, TH3F*> h_3dm;
-std::map<std::string, TH3F*> h_3dbm;
-std::map<std::string, TH3F*> h_3dbpl;
+//std::map<std::string, TH3F*> h_3dpl;
+//std::map<std::string, TH3F*> h_3dm;
+//std::map<std::string, TH3F*> h_3dpl_phi;
+//std::map<std::string, TH3F*> h_3dm_phi;
+//std::map<std::string, TH3F*> h_3dbm;
+//std::map<std::string, TH3F*> h_3dbpl;
+std::map<std::string, THnSparse*> h_ndm;
+std::map<std::string, THnSparse*> h_ndpl;
 
 // Compute the sagitta given the radii and the phi coordinate of three point in the tracker
 float calculSag(float r1, float r2, float r3, float phi1, float phi2, float phi3){
@@ -154,6 +161,7 @@ void plot3D(std::string title, float xval, float yval, float zval, double weight
 	if(iter == allhistos.end()) //no histo for this yet, so make a new one
 
 	{
+	  //cout << "Write new histo: " << title << endl;
 		TH3F* currentHisto= new TH3F(title.c_str(), title.c_str(), numbinsx, xmin, xmax, numbinsy, ymin, ymax, numbinsz, zmin, zmax);
 		currentHisto->Fill(xval, yval, zval, weight);
 		allhistos.insert(std::pair<std::string, TH3F*> (title,currentHisto) );
@@ -166,4 +174,40 @@ void plot3D(std::string title, float xval, float yval, float zval, double weight
 
 	return;
 
+}
+void plotND(std::string title, Double_t val[], double weight, std::map<std::string, THnSparse*> &allhistos,
+	    Int_t bin[], Double_t valmin[], Double_t valmax[], int dim)
+{
+  //cout << "In plotND " << endl;
+  //for (std::map<std::string,THnSparse*>::iterator it=allhistos.begin(); it!=allhistos.end(); ++it) std::cout << it->first << ",";
+  std::map<std::string, THnSparse*>::iterator iter= allhistos.find(title);
+  if(iter == allhistos.end()) //no histo for this yet, so make a new one
+    
+    {
+      //for (std::map<std::string,THnSparse*>::iterator it=allhistos.begin(); it!=allhistos.end(); ++it) std::cout << it->first << ",";
+      //cout << endl;
+      cout << "Write new histo: " << title << endl;
+      //THnSparse* currentHisto;
+      //currentHisto= new THnSparseF(title.c_str(), title.c_str(), dim, bin, valmin, valmax);
+      THnSparse* currentHisto= new THnSparseF(title.c_str(), title.c_str(), dim, bin, valmin, valmax);
+      currentHisto->Sumw2();
+      currentHisto->Fill(val, weight);
+      allhistos.insert(std::pair<std::string, THnSparse*> (title,currentHisto) );
+    }
+  else // exists already, so just fill it
+    
+    {
+      //cout << "filling in " << title << endl;
+      (*iter).second->Fill(val, weight);
+    }
+  
+  int countIndex = 0;
+  cout << "------------------------------------------------In plot ND " << endl;
+  for (std::map<std::string,THnSparse*>::iterator it=allhistos.begin(); it!=allhistos.end(); ++it) countIndex+=1;
+  cout << countIndex << " elements, " << allhistos.begin()->first << endl;
+  countIndex = 0;
+  for (std::map<std::string,THnSparse*>::iterator it=h_ndpl.begin(); it!=h_ndpl.end(); ++it) countIndex+=1;
+  if (countIndex!=0) cout << countIndex << " elements, " << h_ndpl.begin()->first << endl;
+  return;
+  
 }
