@@ -1,9 +1,10 @@
 import ROOT
 import math
+canv = ROOT.TCanvas()
+ROOT.gStyle.SetOptFit()
 
-
-prefix = 'June22_'
-source = 'MC'
+prefix = 'July5_old_'
+source = 'DATA'
 
 fIn=ROOT.TFile(prefix+'MinBias3D_'+source+'.root')
 fOut=ROOT.TFile(prefix+'RadLength_'+source+'.root', 'RECREATE')
@@ -22,6 +23,7 @@ for key in fIn.GetListOfKeys():
     triplet=[p for p in th3.GetName().split('_') if not 'minus' in p][0]
     print triplet
 
+    #if triplet!='pixel3': continue
     #find the paired plus
     th3pl=ROOT.TH3
     th3pl=fIn.Get('sag3Dplus_'+triplet)
@@ -52,7 +54,13 @@ for key in fIn.GetListOfKeys():
         if(rms.GetEntries()<7): continue
         fit=ROOT.TF1("fit", "pol1");
         rms.Fit(fit, "Q");
-
+        '''
+        eta = radlength.GetXaxis().GetBinCenter(i)
+        #if abs(eta+0.)<1.e-2:
+        if True:
+            rms.Draw()
+            canv.SaveAs('plots/'+prefix+'positiveTest_'+triplet+'_eta'+str(round(eta,2))+'.png')
+        '''
         slope.SetBinContent(i,fit.GetParameter(1))
         slope.SetBinError(i, fit.GetParError(1))
 

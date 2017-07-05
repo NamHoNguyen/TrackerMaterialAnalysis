@@ -55,8 +55,8 @@ std::map<std::string, TH2F*> h_2dxptpl;
 std::map<std::string, TH2F*> h_2dxptm;
 std::map<std::string, TH2F*> h_2dp;
 std::map<std::string, TH2F*> h_2dp2;
-//std::map<std::string, TH3F*> h_3dpl;
-//std::map<std::string, TH3F*> h_3dm;
+std::map<std::string, TH3F*> h_3dpl;
+std::map<std::string, TH3F*> h_3dm;
 //std::map<std::string, TH3F*> h_3dpl_phi;
 //std::map<std::string, TH3F*> h_3dm_phi;
 //std::map<std::string, TH3F*> h_3dbm;
@@ -201,6 +201,7 @@ void plotND(std::string title, Double_t val[], double weight, std::map<std::stri
       (*iter).second->Fill(val, weight);
     }
   
+  /*
   int countIndex = 0;
   cout << "------------------------------------------------In plot ND " << endl;
   for (std::map<std::string,THnSparse*>::iterator it=allhistos.begin(); it!=allhistos.end(); ++it) countIndex+=1;
@@ -208,6 +209,7 @@ void plotND(std::string title, Double_t val[], double weight, std::map<std::stri
   countIndex = 0;
   for (std::map<std::string,THnSparse*>::iterator it=h_ndpl.begin(); it!=h_ndpl.end(); ++it) countIndex+=1;
   if (countIndex!=0) cout << countIndex << " elements, " << h_ndpl.begin()->first << endl;
+  */
   return;
   
 }
