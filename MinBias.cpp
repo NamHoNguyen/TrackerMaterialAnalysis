@@ -35,12 +35,13 @@ std::vector<string> tripl_overlap;
 //int countIndex = 0;
 
 // Important variables
+//string prefix1D="July13_3files_"; // Keep it like this
+//string prefix3D="July13_3files_6binPhi_10binPt2_";
 string prefix1D="July5_allfiles_"; // Keep it like this
 string prefix3D="July5_allfiles_6binPhi_10binPt2_";
-//string prefix1D="July5_3files_"; // Keep it like this
-//string prefix3D="July5_3files_6binPhi_10binPt2_";
 float binPhi[3] = {6.,-3.15,3.15}; // binning in Phi
 float binPt2[3] = {10.,0.5,2.25}; // binning in Pt^2
+float binTrackEta[3] = {41.,-4.,4.}; // binning in trackEta
 
 
 void MinBiasAnalysis(TTree *Tree, bool isFirstRun, bool isMC){
@@ -229,6 +230,9 @@ void MinBiasAnalysis(TTree *Tree, bool isFirstRun, bool isMC){
 	}
       }
 
+      // Separate different triplets with the same middle module
+      //triplet=tripl_name;
+
       if(position[j]=="_pixel2") in_plots++;
       
       /*
@@ -271,8 +275,10 @@ void MinBiasAnalysis(TTree *Tree, bool isFirstRun, bool isMC){
 	  else plot1D("sagplus_new"+triplet, ((pt[j]*sag)-mean_pl)*sqrt(b2), 1, h_1dpl, 600, -0.1, 0.1);
 	  */
 	  
-	  // add phi
 	  string pt2_string = "";
+	  string trackEta_string = "";
+
+	  // add phi
 	  Double_t pt2_min = binPt2[1];
 	  Double_t pt2_max = binPt2[2];
 	  Double_t pt2_step = (pt2_max-pt2_min)/binPt2[0];
@@ -286,14 +292,32 @@ void MinBiasAnalysis(TTree *Tree, bool isFirstRun, bool isMC){
 	      pt2_min = ipt2;
 	    }
 	  }
-	  if(sag<0) plot3D("sag3Dminus"+triplet+pt2_string, eta[j], phi[j], ((pt[j]*sag)-mean_min)*sqrt(b2), 1, h_3dm, 
+	  // add trackEta
+	  Double_t trackEta_min = binTrackEta[1];
+	  Double_t trackEta_max = binTrackEta[2];
+	  Double_t trackEta_step = (trackEta_max-trackEta_min)/binTrackEta[0];
+	  if (trackEta<trackEta_min||trackEta>trackEta_max) continue;
+	  else {
+	    for (Double_t iTrackEta=trackEta_min+trackEta_step;iTrackEta<=trackEta_max;iTrackEta+=trackEta_step){
+	      //cout << iTrackEta << endl;
+	      if (trackEta<iTrackEta){
+		trackEta_string = "_"+std::to_string((iTrackEta+trackEta_min)/2.);
+		break;
+	      }
+	      trackEta_min = iTrackEta;
+	    }
+	  }
+	  
+	  //cout << trackEta_string << endl;
+
+	  if(sag<0) plot3D("sag3Dminus"+triplet+trackEta_string+pt2_string, eta[j], phi[j], ((pt[j]*sag)-mean_min)*sqrt(b2), 1, h_3dm, 
 			   41, -4, 4, int(binPhi[0]), binPhi[1], binPhi[2], 600, -0.01, 0.01);
-	  else plot3D("sag3Dplus"+triplet+pt2_string, eta[j], phi[j], ((pt[j]*sag)-mean_pl)*sqrt(b2), 1, h_3dpl, 
+	  else plot3D("sag3Dplus"+triplet+trackEta_string+pt2_string, eta[j], phi[j], ((pt[j]*sag)-mean_pl)*sqrt(b2), 1, h_3dpl, 
 		      41, -4, 4, int(binPhi[0]), binPhi[1], binPhi[2], 600, -0.01, 0.01);
 	  
 	  
 	  /*
-	  // without phi
+	  // 1D Rad Length vs. local eta
 	  if(sag<0) plot3D("sag3Dminus"+triplet, eta[j], pt[j]*pt[j], ((pt[j]*sag)-mean_min)*sqrt(b2), 1, h_3dm, 
 			   41, -4, 4, int(binPt2[0]), binPt2[1], binPt2[2], 600, -0.01, 0.01); 
 	  else plot3D("sag3Dplus"+triplet, eta[j], pt[j]*pt[j], ((pt[j]*sag)-mean_pl)*sqrt(b2), 1, h_3dpl, 
@@ -330,6 +354,7 @@ void MinBias(bool isFirstRun = true, bool isMC = true, TString dirname="root://e
 		while ((file=(TSystemFile*)next())) {
 			fname = file->GetName();
 			if (!file->IsDirectory() && fname.EndsWith(ext)) {
+			  //if(!isMC&&i>0) break; //set the number of files to run
 			  //if(!isMC&&i>2) break; //set the number of files to run
 				i++;
 				//cout << fname.Data() << endl;
@@ -426,26 +451,4 @@ void MinBias(bool isFirstRun = true, bool isMC = true, TString dirname="root://e
 	  it3d2->second->Write();
 	  delete it3d2->second;
 	}
-	/*
-	
-
-	// Writes ND histos
-	
-	if(!isFirstRun){
-	  TFile *fileND;
-	  if(isMC) fileND= new TFile((prefix+"MinBiasND_MC.root").c_str(),"RECREATE");
-	  else fileND=new TFile((prefix+"MinBiasND_DATA.root").c_str(),"RECREATE");
-	}
-	for(itndm=h_ndm.begin(); itndm!=h_ndm.end(); itndm++) {
-	  
-	  itndm->second->Write();
-	  delete itndm->second;
-	}
-	
-	for(itndpl=h_ndpl.begin(); itndpl!=h_ndpl.end(); itndpl++) {
-	  
-	  itndpl->second->Write();
-	  delete itndpl->second;
-	}
-	*/
 }
