@@ -2,7 +2,7 @@
 Author: Ho Nam Nguyen, Elisabetta Manca
 Purpose:
 - This script takes in a 3D-sagitta file and calculates corresponding radiation length
-- The result is binned in local eta and local phi
+- The result is binned in local eta, local phi, and track eta
 - It plots out fits with negative radiaton lengths
 '''
 import ROOT
@@ -29,7 +29,7 @@ ntrackEta,trackEtamin,trackEtamax = [41,-4.,4.]
 
 
 fIn=ROOT.TFile(prefix+'MinBias3D_'+source+'.root')
-fOut=ROOT.TFile(prefix+'RadLength2D_'+source+'.root', 'RECREATE')
+fOut=ROOT.TFile(prefix+'RadLength3D_'+source+'.root', 'RECREATE')
 
 ROOT.gStyle.SetOptStat(0)
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
